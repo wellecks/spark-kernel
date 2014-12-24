@@ -60,6 +60,12 @@ class MagicLoader(
   def magicClassName(query: String): String =
     lowercaseClassMap(magicClassNames).getOrElse(query.toLowerCase, query)
 
+  def magicClass(magicName: String): Class[_] = {
+    println(magicClassNames)
+    val magicClass = loadClass(magicClassName(magicName))
+    magicClass.getClass
+  }
+
   /**
    * @return list of magic class names in magicPackage.
    */
@@ -77,7 +83,7 @@ class MagicLoader(
     names.map(n => (n.toLowerCase, n)).toMap
   }
 
-  protected def createMagicInstance(name: String) = {
+  def createMagicInstance(name: String) = {
     val magicClass = loadClass(name) // Checks parent loadClass first
 
     val runtimeMirror = runtimeUniverse.runtimeMirror(this)

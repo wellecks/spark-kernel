@@ -127,7 +127,7 @@ class MagicLoaderSpec extends FunSpec with Matchers with MockitoSugar {
         val mockMagic = mock[MagicTemplate]
 
         val magicLoader = new MagicLoader() {
-          override protected def createMagicInstance(name: String): Any =
+          override def createMagicInstance(name: String): Any =
             mockMagic
         }
 
@@ -143,7 +143,7 @@ class MagicLoaderSpec extends FunSpec with Matchers with MockitoSugar {
         val mockMagic = mock[MagicTemplate]
 
         val magicLoader = new MagicLoader() {
-          override protected def createMagicInstance(name: String): Any =
+          override def createMagicInstance(name: String): Any =
             mockMagic
         }
 

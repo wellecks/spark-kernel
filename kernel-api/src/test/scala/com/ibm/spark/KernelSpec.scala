@@ -2,20 +2,22 @@ package com.ibm.spark
 
 import com.ibm.spark._
 import com.ibm.spark.interpreter._
+import com.ibm.spark.magic.MagicExecutor
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 
 import org.scalatest.{FunSpec, Matchers}
 
 /**
- * Created by bburns on 12/17/14.
- */
+* Created by bburns on 12/17/14.
+*/
 class KernelSpec extends FunSpec with Matchers with MockitoSugar {
   describe("Kernel") {
     describe("#eval") {
 
       val interpreter = mock[Interpreter]
-      val kernel = new Kernel(interpreter)
+      val magicExecutor = mock[MagicExecutor]
+      val kernel = new Kernel(interpreter, magicExecutor)
       val badCode = Some("abc foo bar")
       val goodCode = Some("val foo = 1")
       val errorCode = Some("val foo = bar")

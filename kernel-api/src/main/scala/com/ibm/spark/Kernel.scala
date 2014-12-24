@@ -1,10 +1,13 @@
 package com.ibm.spark
 
 import com.ibm.spark.interpreter._
+import com.ibm.spark.magic.MagicExecutor
 
 class Kernel (
-  val interpreter: Interpreter
+  val interpreter: Interpreter,
+  val magics: MagicExecutor
 ) {
+
   def eval(code: Option[String]): (Boolean, String) = {
     code.map(c => {
       val (success, result) = interpreter.interpret(c)
@@ -22,4 +25,5 @@ class Kernel (
       }
     }).getOrElse((false, "Error!"))
   }
+
 }

@@ -105,7 +105,7 @@ class MagicManagerSpec extends TestKit(
           val mockMagic = mock[MagicTemplate]
           doThrow(fakeMagicReturn).when(mockMagic).executeCell(any[Seq[String]])
           val myMagicLoader = new MagicLoader() {
-            override protected def createMagicInstance(name: String) =
+            override def createMagicInstance(name: String) =
               mockMagic
           }
           val magicManager =
@@ -134,7 +134,7 @@ class MagicManagerSpec extends TestKit(
           val myMagicLoader = new MagicLoader() {
             override def hasMagic(name: String): Boolean = true
 
-            override protected def createMagicInstance(name: String) =
+            override def createMagicInstance(name: String) =
               mockMagic
           }
 

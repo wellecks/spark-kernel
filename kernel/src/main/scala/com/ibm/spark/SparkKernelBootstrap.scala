@@ -32,7 +32,7 @@ import com.ibm.spark.kernel.protocol.v5.relay.{ExecuteRequestRelay, KernelMessag
 import com.ibm.spark.kernel.protocol.v5.security.SignatureManagerActor
 import com.ibm.spark.kernel.protocol.v5.socket._
 import com.ibm.spark.kernel.protocol.v5.stream.KernelMessageStream
-import com.ibm.spark.magic.MagicLoader
+import com.ibm.spark.magic.{MagicExecutor, MagicLoader}
 import com.ibm.spark.magic.builtin.BuiltinLoader
 import com.ibm.spark.magic.dependencies.DependencyMap
 import com.ibm.spark.security.KernelSecurityManager
@@ -66,6 +66,7 @@ case class SparkKernelBootstrap(config: Config) extends LogLike {
   private var dependencyMap: DependencyMap            = _
   private var builtinLoader: BuiltinLoader            = _
   private var magicLoader: MagicLoader                = _
+  private var magicExecutor: MagicExecutor            = _
 
   private var actorSystem: ActorSystem                = _
   private var actorLoader: ActorLoader                = _
@@ -94,11 +95,12 @@ case class SparkKernelBootstrap(config: Config) extends LogLike {
     initializeKernelHandlers()
     publishStatus(KernelStatusType.Starting)
     initializeInterpreter()
-    initializeKernelInterpreter()
-    initializeKernel()
     initializeSparkContext()
     initializeDependencyDownloader()
     initializeMagicLoader()
+    initializeMagicExecutor()
+    initializeKernelInterpreter()
+    initializeKernel()
     initializeSystemActors()
     registerInterruptHook()
     registerShutdownHook()
@@ -380,12 +382,16 @@ case class SparkKernelBootstrap(config: Config) extends LogLike {
 
   protected[spark] def initializeKernel(): Unit = {
     //interpreter.doQuietly {
-    kernel = new Kernel(kernelInterpreter)
+    kernel = new Kernel(kernelInterpreter, magicExecutor)
     interpreter.bind(
       "kernel", "com.ibm.spark.Kernel",
       kernel, List( """@transient implicit""")
     )
     //}
+  }
+
+  private def initializeMagicExecutor() = {
+    magicExecutor = new MagicExecutor(magicLoader)
   }
 
   private def initializeSystemActors(): Unit = {
